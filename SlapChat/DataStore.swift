@@ -11,7 +11,9 @@ import CoreData
 
 class DataStore {
     
-    static let sharedInstance = DataStore()
+    static let sharedInstance: DataStore = DataStore()
+    
+    var messages: [NSManagedObject] = []
     
     private init() {}
     
@@ -43,6 +45,24 @@ class DataStore {
         })
         return container
     }()
+    
+    
+    func fetchData() {
+        let context = persistentContainer.viewContext
+        
+        let messageFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
+        
+        do {
+            messages = try context.fetch(messageFetch) as! [NSManagedObject]
+        } catch {
+            fatalError("Failed to fetch messages: \(error)")
+        }
+        
+        
+//        messages.sort { $0.createdAt < $1.createdAt }
+        print(messages)
+    }
+    
     
     // MARK: - Core Data Saving support
     
